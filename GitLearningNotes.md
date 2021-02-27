@@ -263,3 +263,176 @@ $ git branch <name>
 ```
 $ git log --graph --pretty=oneline --abbrev-commit
 ```
+
+### 3.分支管理策略
+
+使用`--no-ff`参数来进行分支的合并，强制禁用Fast Forward模式
+
+```
+$ git merge --no-ff -m "merge with no-ff" dev
+```
+
+### 4.BUG分支
+
+1、`git stash`储藏当前工作现场的功能
+
+```
+$ git stash
+Saved working directory and index state WIP on dev: f52c633 add merg
+```
+
+第二步：确定在哪一个分支上进行修改
+
+```
+$ git checkout master
+```
+
+然后创建新的需要修改的分支
+
+```
+$ git checkout -b issue-101
+Switched to a new branch 'issue-101'
+```
+
+之后提交
+
+```
+$ git add readme.txt 
+$ git commit -m "fix bug 101"
+[issue-101 4c805e2] fix bug 101
+ 1 file changed, 1 insertion(+), 1 deletion(-
+```
+
+然后切回到master分支，完成合并，之后删除`issue-101`分支：
+
+```
+$ git switch master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 6 commits.
+  (use "git push" to publish your local commits)
+
+$ git merge --no-ff -m "merged bug fix 101" issue-101
+Merge made by the 'recursive' strategy.
+ readme.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+最后回到原来的dev工作环境中
+
+```
+$ git switch dev
+Switched to branch 'dev'
+
+$ git status
+On branch dev
+nothing to commit, working tree clean
+```
+
+用`git stash list`查看原来的工作现场
+
+```
+$ git stash list
+stash@{0}: WIP on dev: f52c633 add merge
+```
+
+这时候我们原有的工作保存在了stash（藏匿处）当中
+
+恢复的的办法有两种：
+
+第一种：先用`git stash apply`恢复
+
+​				然后再用`git stash drop`来删除
+
+第二种：用`git stash pop`，恢复的同时把stash内容也删了：
+
+```
+$ git stash pop
+On branch dev
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   hello.py
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   readme.txt
+
+Dropped refs/stash@{0} (5d677e2ee266f39ea296182fb2354265b91b3b2a)
+```
+
+此时再用`git stash list`查看的时候就看不到任何stash当中的内容了
+
+### 5.Feature分支
+
+对于软件开发中添加新功能的时候可以先新建一个feature分支，在其上面进行开发，完成后合并，最后删除feature分支。
+
+第一步：首先新建一个分支并进入到这个分支当中
+
+```
+$ git switch -c feature-vulcan
+Switched to a new branch 'feature-vulcan'
+```
+
+第二步：开发完毕后将这个分支添加入stage然后提交
+
+```
+$ git add vulcan.py
+
+$ git status
+On branch feature-vulcan
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   vulcan.py
+
+$ git commit -m "add feature vulcan"
+[feature-vulcan 287773e] add feature vulcan
+ 1 file changed, 2 insertions(+)
+ create mode 100644 vulcan.py
+```
+
+第三步：切换回dev然后准备合并
+
+```
+$ git switch dev
+```
+
+此时如果发生意外要强制删除feature-vulcan则需要运用-D
+
+```
+$ git branch -D feature-vulcan
+Deleted branch feature-vulcan (was 287773e).
+```
+
+### 6.多人协作
+
+查看远程信息，用`git remote`
+
+```
+$ git remote
+origin
+```
+
+或者，用`git remote -v`显示更详细的信息：
+
+```
+$ git remote -v
+origin  git@github.com:michaelliao/learngit.git (fetch)
+origin  git@github.com:michaelliao/learngit.git (push
+```
+
+推送分支的过程：
+
+将该分支的所有本地提交到库当中，选择需要推送进仓库的分支名然后操作
+
+```
+$ git push origin master
+```
+
+如果要推送其他分支，比如`dev`，就改成：
+
+```
+$ git push origin dev
+```
