@@ -436,3 +436,129 @@ $ git push origin master
 ```
 $ git push origin dev
 ```
+
+### 7.Rebase
+
+git rebase可以将分叉的提交变为一条直线
+
+```
+$ git rebase
+First, rewinding head to replay your work on top of it...
+Applying: add comment
+Using index info to reconstruct a base tree...
+M	hello.py
+Falling back to patching base and 3-way merge...
+Auto-merging hello.py
+Applying: add author
+Using index info to reconstruct a base tree...
+M	hello.py
+Falling back to patching base and 3-way merge...
+Auto-merging hello.py
+```
+
+输出了一大堆操作，到底是啥效果？再用`git log`看看：
+
+```
+$ git log --graph --pretty=oneline --abbrev-commit
+* 7e61ed4 (HEAD -> master) add author
+* 3611cfe add comment
+* f005ed4 (origin/master) set exit=1
+* d1be385 init hello
+...
+```
+
+## 6.标签管理
+
+通过commit提交的时候为其设置标签方便查看先前的版本
+
+### 1.创建标签
+
+第一步：切换到需要打标签的分支之上
+
+```
+$ git branch
+* dev
+  master
+$ git checkout master
+Switched to branch 'master'
+```
+
+第二步：直接敲`git tag <name>`就可以打一个新标签：
+
+```
+$ git tag v1.0
+```
+
+可以用命令`git tag`查看所有标签：
+
+```
+$ git tag
+v1.0
+```
+
+如果要对历史的操作进行标签的处理则需要调出原有的commit代号然后添加标签
+
+```
+$ git log --pretty=oneline --abbrev-commit
+12a631b (HEAD -> master, tag: v1.0, origin/master) merged bug fix 101
+4c805e2 fix bug 101
+e1e9c68 merge with no-ff
+f52c633 add merge
+cf810e4 conflict fixed
+5dc6824 & simple
+14096d0 AND simple
+b17d20e branch test
+d46f35e remove test.txt
+b84166e add test.txt
+519219b git tracks changes
+e43a48b understand how stage works
+1094adb append GPL
+e475afc add distributed
+eaadf4e wrote a readme file
+```
+
+比方说要对`add merge`这次提交打标签，它对应的commit id是`f52c633`，敲入命令：
+
+```
+$ git tag v0.9 f52c633
+```
+
+注意，标签不是按时间顺序列出，而是按字母排序的。可以用`git show <tagname>`查看标签信息：
+
+```
+$ git show v0.9
+commit f52c63349bc3c1593499807e5c8e972b82c8f286 (tag: v0.9)
+Author: Michael Liao <askxuefeng@gmail.com>
+Date:   Fri May 18 21:56:54 2018 +0800
+
+    add merge
+
+diff --git a/readme.txt b/readme.txt
+...
+```
+
+还可以创建带有说明的标签，用`-a`指定标签名，`-m`指定说明文字：
+
+```
+$ git tag -a v0.1 -m "version 0.1 released" 1094adb
+```
+
+### 2.操作标签
+
+1、删除错误标签
+
+如果标签打错了，也可以删除：
+
+```
+$ git tag -d v0.1
+Deleted tag 'v0.1' (was f15b0dd)
+```
+
+2、如果要推送某个标签到远程，使用命令`git push origin <tagname>`：
+
+```
+$ git push origin v1.0
+Total 0 (delta 0), reused 0 (delta 0)
+To github.com:michaelliao/learngit.git
+ * [new tag]         v1.0 -> v1.0
+```
