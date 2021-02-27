@@ -214,3 +214,52 @@ $ git clone http://github.com/Aaronhuang-778/Git-Learning-Notes.git
 
 ## 5.分支管理
 
+### 1.创建与合并分支
+
+1、创建并切换到一个新的分支
+
+```
+$ git switch -c dev
+```
+
+2、直接切换到已有的分支
+
+```
+$ git switch master
+```
+
+3、将某个分支的内容合并到当前分支
+
+```
+$ git merge dev
+```
+
+4、删除某个分支 
+
+```
+$ git branch -d dev
+```
+
+5、查看分支分布
+
+```
+$ git branch
+```
+
+6、创建分支
+
+```
+$ git branch <name>
+```
+
+### 2.解决冲突
+
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+
+解决冲突就是把Git合并失败的文件手动编辑为我们希望的内容，再提交。
+
+查看分支合并图：
+
+```
+$ git log --graph --pretty=oneline --abbrev-commit
+```
