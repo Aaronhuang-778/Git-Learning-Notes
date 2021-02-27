@@ -1,6 +1,6 @@
 # Git-Learning-Notes
 
 ```
-Creating a new branch is quick and simple.
-hahahah
+本仓库内容为作者本人学习Git的笔记，以供学习者参考
+
 ```
