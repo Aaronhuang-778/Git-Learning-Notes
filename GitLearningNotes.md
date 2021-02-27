@@ -577,3 +577,9 @@ $ git push origin :refs/tags/v0.9
 To github.com:michaelliao/learngit.git
  - [deleted]         v0.9
 ```
+
+## 3.结束语
+
+如果想与作者交流请加微信：CenterEdge_0101
+
+或者邮箱：398838870@qq.com
